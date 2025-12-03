@@ -136,6 +136,7 @@ Regardless of which feature you choose, your implementation must include:
 1. **Fork the Repository:**
    - Fork this repository to your own GitHub account
    - Clone your fork locally to work on it
+   - Follow instructions on README.md to setup both backend and frontend
 2. **Documentation:**
    Create a file named `SOLUTION.md` in the root directory containing:
    - **Feature Choice:** Which feature you chose and why
@@ -242,8 +243,7 @@ Please submit your Pull Request within **48 hours** of receiving this assignment
 
 **Deadline:** 6th Dec before 5:00 AM EAT
 
-**Note:** Your PR should be created by the deadline. We understand you may need to make minor fixes after submission - that's fine, but the core work should be complete by the deadline.
-
+**Note:** Your PR should be created by the deadline. 
 ---
 
 Good luck! We're excited to see your solution. 
