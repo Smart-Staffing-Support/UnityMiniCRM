@@ -23,76 +23,6 @@ MiniCRM is a simple customer relationship management application that currently 
 4. **Be completable within 48 hours** (scope appropriately)
 5. **Demonstrate your technical strengths**
 
-### Feature Suggestions
-
-If you need inspiration, here are some ideas. **You are not limited to these** - feel free to propose and implement your own idea!
-
-#### Option A: Deal/Opportunity Pipeline
-Build a sales pipeline system to track deals through stages:
-- Create Deal model with stages (New → Qualified → Proposal → Negotiation → Closed)
-- Kanban board interface with drag-and-drop
-- Deal value tracking and statistics
-- Integration with leads
-
-#### Option B: Activity & Interaction Tracking
-Build a system to log interactions with leads/contacts:
-- Activity model (calls, emails, meetings, notes)
-- Timeline view showing all interactions
-- Activity types and filtering
-- Reminders for follow-ups
-- Activity statistics and insights
-
-#### Option C: Email Campaign System
-Build a basic email marketing system:
-- Create and send email campaigns to filtered contacts/leads
-- Template system with variable substitution
-- Campaign scheduling using Celery
-- Basic tracking (sent, delivered, opened)
-- Campaign performance dashboard
-
-#### Option D: Advanced Analytics Dashboard
-Build a comprehensive analytics system:
-- Lead conversion metrics and funnels
-- Contact engagement scoring
-- Time-series charts (leads over time, conversion rates)
-- Customizable reports
-- Export functionality
-- Performance insights and recommendations
-
-#### Option E: Lead Scoring & Qualification
-Build an intelligent lead qualification system:
-- Scoring algorithm based on multiple factors
-- Automatic lead scoring on creation/update
-- Score visualization and history
-- Qualification status workflow
-- Integration with existing lead management
-
-#### Option F: Document Management
-Build a document attachment system:
-- Upload/attach documents to leads/contacts
-- Document categorization and tagging
-- Version control for documents
-- Document viewer/preview
-- Search functionality
-
-#### Option G: Team Collaboration Features
-Build features for team coordination:
-- Assign leads/contacts to team members
-- User model and authentication
-- Activity feed showing team actions
-- Comments/notes on leads
-- Task assignment and tracking
-
-#### Option H: Your Own Idea!
-Propose and implement your own feature. Some possibilities:
-- SMS/WhatsApp integration
-- Lead import/export (CSV, Excel)
-- Duplicate detection and merging
-- Custom fields and forms
-- Integration with external APIs (e.g., company data enrichment)
-- Mobile-responsive improvements
-- Real-time notifications with WebSockets
-
 ---
 
 ## Core Requirements
@@ -134,13 +64,23 @@ Regardless of which feature you choose, your implementation must include:
 #### Submission Method: Fork & Pull Request
 
 1. **Fork the Repository:**
-   - Fork this repository to your own GitHub account
-   - Clone your fork locally to work on it
-   - Follow instructions on README.md to setup both backend and frontend
-2. **Documentation:**
+   - Fork this repository to your own GitHub account.
+   - Clone your fork locally to work on it.
+   - Follow the instructions in `README.md` to set up both backend and frontend.
+
+2. **Create a Feature Branch:**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Commit Your Work:**
+   - Make commits with clear, descriptive messages.
+   - Push to your fork: `git push origin feature/your-feature-name`.
+
+4. **Documentation:**
    Create a file named `SOLUTION.md` in the root directory containing:
    - **Feature Choice:** Which feature you chose and why
-   - **Product Rationale:** Why this feature adds value to a CRM
+   - **Product Rationale:** Why this feature adds value to the CRM
    - **Technical Overview:** Architecture and approach
    - **Design Decisions:** Key technical decisions and justifications
    - **Implementation Details:** What you built and how it works
@@ -151,22 +91,14 @@ Regardless of which feature you choose, your implementation must include:
    - **Future Improvements:** What you would add/change with more time
    - **Trade-offs:** What you prioritized and what you deferred
 
-3. **Database Migration:**
-   - Include all migration files
-   - Ensure migrations run successfully on a fresh database   
-2. **Create a Feature Branch:**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-   
-3. **Commit Your Work:**
-   - Make commits with clear, descriptive messages
-   - Push to your fork: `git push origin feature/your-feature-name`
+5. **Database Migration:**
+   - Include all migration files.
+   - Ensure migrations run successfully on a fresh database.
 
-4. **Create a Pull Request:**
-   - When ready, create a Pull Request from your fork back to the original repository
-   - Title: `[Your Name] - [Feature Name]`
-   - In the PR description, include a brief summary and link to your `SOLUTION.md`
+6. **Create a Pull Request:**
+   - When ready, create a Pull Request from your fork back to the original repository.
+   - Title: `[Your Name] - [Feature Name]`.
+   - In the PR description, include a brief summary and a link to your `SOLUTION.md`.
 
 ### How We'll Review Your Submission
 
@@ -221,7 +153,8 @@ Make sure your code runs successfully by following your own setup instructions o
 
 If you have questions about the requirements:
 1. Make reasonable assumptions and document them in your `SOLUTION.md`
-2. If something is truly blocking, you may email cmotari@unitedlegalgroup.com for clarification
+2. If something is truly blocking, you may email dev@smartstaffingsupport.com
+ for clarification
 3. We value your ability to make good technical decisions independently
 
 ---
@@ -229,8 +162,8 @@ If you have questions about the requirements:
 ## Important Notes
 
 - **Scope appropriately** - Choose a feature you can complete well in 48 hours
-- **Code must run successfully** - we will test your submission
-- **Original work only** - don't copy solutions from the internet
+- **Code must run successfully** - We will test your submission
+- **Original work only** - Don't copy solutions from the internet
 - **Quality over quantity** - a well-implemented focused feature beats a half-finished ambitious one
 - **Show your strengths** - Choose a feature that lets you demonstrate what you're good at
 - **It's okay to be creative** - We value innovation and original thinking
@@ -243,7 +176,8 @@ Please submit your Pull Request within **48 hours** of receiving this assignment
 
 **Deadline:** 6th Dec before 5:00 AM EAT
 
-**Note:** Your PR should be created by the deadline. 
+**Note:** Your PR should be created by the deadline.
+
 ---
 
 Good luck! We're excited to see your solution. 
