@@ -1,19 +1,38 @@
 # MiniCRM Take-Home Assessment
 
-## Feature Choice & Product Rationale
+## Feature Selection Background & Motivation
 
-When using the MiniCRM platform for the first time, I noticed a key usability gap: although the system tracks the number of companies, deals, and tasks created, it does not provide specific visibility into which company or deal was created, which contact is associated with a company, or which task was assigned to whom.
+When I first interacted with the MiniCRM platform, I noticed several usability gaps that made the system feel less transparent and harder to navigate, especially for someone using it for the first time. Although the dashboard displays counts of companies, deals, and tasks, it does not provide deeper visibility into what was created or how items are connected.
 
-This lack of clarity can create uncertainty for new users(me). For example:
+The most noticeable gaps were:
 
- - After creating a company, a user cannot immediately confirm that the company exists in the system.
+1. **Lack of immediate confirmation:**
+After creating a company, there was no direct indication that it had been successfully added.
 
- - When creating a deal, there is no instant feedback that it is linked correctly to a company or contact.
+2. **Unclear associations:**
+When creating a deal, I could not instantly verify whether it was correctly linked to the intended company or contact.
 
- - Task assignments are not clearly communicated, making it hard to track responsibilities.
+3. **Task responsibility not clearly surfaced:**
+Task assignments were not shown in a way that made it easy to understand who was responsible for what.
+
+Together, these issues created friction and uncertainty — reducing confidence that actions were actually being processed or recorded correctly. For a CRM, where clarity and traceability are essential, this made the system feel less responsive than expected.
+
+In addition to these visibility issues, I also noticed challenges in the overall user experience:
+
+4. **No loading indicators:**
+When submitting a company, deal, or task, the interface sometimes appeared completely unresponsive. This led me to click multiple times without realizing the request was still processing.
+
+5. **Lack of error feedback:**
+If something went wrong, there were no error alerts. Actions failed silently, leaving no clear explanation of what happened or what the user should do next.
+
+For a new user, especially someone unfamiliar with backend response times, this uncertainty can quickly become confusing. Navigation became unpredictable, and it was hard to know whether actions were successful or if errors occurred.
+
+These combined issues highlighted an important principle: a system is only as good as its simplest, core interactions. If the basic functionality — confirmation of actions, visible feedback, and clear associations, does not work reliably, it hinders solving larger, more complex problems.
+
+This motivated me to implement a feature that reinforces user confidence, system feedback, and visibility of actions inside the CRM.
 
 
- ---------
+-----------
 
 
 ## Feature Choice
@@ -25,7 +44,7 @@ To address these issues, I implemented a **real-time notification and email syst
 
 This feature addresses key usability gaps:
 
- 1. Users immediately know when a company, deal, or task has been successfully created.
+ 1. Users immediately know when a company and deal has been successfully created.
 
  2. Users can view notifications without navigating away from the current page.
 
@@ -121,15 +140,21 @@ The solution includes:
 
 ## Time Breakdown
 
- | Task                                          | Approx. Time Spent |
-| --------------------------------------------- | ------------------ |
-| Backend: Django signals & email notifications | 6 hours            |
-| Frontend: Notification bell & badge numbers   | 5 hours            |
-| Frontend: Timeline component with filters     | 6 hours            |
-| Testing (unit and integration)                | 4 hours            |
-| Documentation & cleanup                       | 2 hours            |
-| **Total**                                     | 23 hours           |
+| Task                                                           | Approx. Time Spent |
+| -------------------------------------------------------------- | ------------------ |
+| Backend: Django signals & email notifications                  | 6 hours            |
+| Frontend: Notification bell & badge numbers                    | 5 hours            |
+| Frontend: Timeline component with filters                      | 6 hours            |
+| Attempted task-specific note-taking feature (unsubmitted)*     | 4 hours            |
+| Testing (unit and integration)                                 | 6 hours            |
+| Documentation & cleanup                                        | 2 hours            |
+| **Total**                                                      | 29 hours           |
 
+\*I also spent time implementing a task-specific note-taking feature intended to help users track the progress of each task.  
+   The idea was to maintain a conversation thread per task so issues could be flagged early, discussed, and resolved **before the task became overdue**.  
+   This would help avoid delays and allow timely support or follow-up.  
+   However, I encountered a bug where task-specific notes could not be isolated (all notes were returned regardless of task).  
+   Due to time constraints and the feature not reaching a stable state, I did not include this part in the final submission.
 
 
 ## Setup Instructions
@@ -137,23 +162,31 @@ The solution includes:
 1. **Clone the repository and checkout your feature branch:**
     - Follow the instructions in `SOLUTION.md` to set up both backend and frontend.
 
-    ```git clone <your-fork-url>
-        git checkout feature/real-time-notifications
+    ```
+        git clone https://github.com/mairura/UnityMiniCRM.git
+        git checkout -b feature/email-notification-timeline
+
     ```
 
 2. **Install backend dependencies and run migrations:**
-    ```pip install -r requirements.txt
+    ```
+        pip install -r requirements.txt
         python manage.py migrate
+
     ```
 
 3. **Start the backend server:**
-    ```python manage.py runserver
+    ```
+        python manage.py runserver
+
     ```
 
 4. **Install frontend dependencies:**
-    ```cd frontend
+    ```
+        cd frontend
         npm install
         npm run dev
+
     ```
 
 ## Testing Instructions
@@ -162,7 +195,7 @@ The solution includes:
     - Run Django tests:
 
         ```
-         python manage.py test tasks
+            python manage.py test tasks
 
         ```
     - **Backend tests include:**
