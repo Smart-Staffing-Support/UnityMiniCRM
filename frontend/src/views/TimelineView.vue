@@ -4,7 +4,7 @@ import { crmService } from "../services/api";
 
 const timeline = ref([]);
 const loading = ref(true);
-const viewMode = ref("card"); // Card or Table view
+const viewMode = ref("card"); 
 const selectedEventTypes = ref([]);
 const selectedPeriod = ref("");
 
@@ -237,7 +237,6 @@ onMounted(fetchTimeline);
 
 .activity-card .v-card-text {
   min-height: 150px;
-  /* ensures cards are similar height */
 }
 
 .text-navy {

@@ -240,3 +240,5 @@ The solution includes:
 - **Better Engagement:** Users receive confirmation of key CRM events, increasing trust and reducing errors.
 
 - **Improved Tracking:** Users can visually see notifications and review the timeline, making CRM management more transparent and reliable.
+
+- **Better UX:** Loading states and error alerts prevent confusion and improve navigation for new users.
