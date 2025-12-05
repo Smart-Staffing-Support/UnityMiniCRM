@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; }
+    h2 { color: #1a237e; }
+    h3 { color: #333; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 5px; }
+    a { color: #1a73e8; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h2>New Company Created: {{ company.name }}</h2>
+  <p><strong>Industry:</strong> {{ company.industry }}</p>
+  <p><strong>Phone:</strong> {{ company.phone }}</p>
+  <p><strong>Email:</strong> {{ company.email }}</p>
+  <p><strong>Website:</strong> <a href="{{ company.website }}">{{ company.website }}</a></p>
+
+  <h3>Deals</h3>
+  <ul>
+    {% for deal in deals %}
+      <li>{{ deal.title }} - Amount: {{ deal.amount }} - Stage: {{ deal.stage }}</li>
+    {% empty %}
+      <li>No deals yet.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { crmService } from '../services/api'
 
+const saving = ref(false)
+
 const deals = ref([])
 const companies = ref([])
 const contacts = ref([])
@@ -145,6 +147,7 @@ const close = () => {
 }
 
 const save = async () => {
+  saving.value = true
   try {
     if (editedIndex.value > -1) {
       await crmService.updateDeal(editedItem.value.id, editedItem.value)
@@ -155,6 +158,9 @@ const save = async () => {
     close()
   } catch (error) {
     console.error('Failed to save deal:', error)
+    alert('An unexpected error occurred while saving the deal.')
+  } finally {
+    saving.value = false
   }
 }
 
@@ -194,17 +200,8 @@ const getDealColor = (index) => {
         <v-card elevation="2" class="mb-4">
           <v-card-text class="pa-4">
             <div class="d-flex align-center gap-3 flex-wrap">
-              <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                label="Search deals..."
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-                class="flex-grow-1"
-                style="max-width: 400px;"
-              ></v-text-field>
+              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search deals..." variant="outlined"
+                density="compact" hide-details clearable class="flex-grow-1" style="max-width: 400px;"></v-text-field>
               <v-spacer></v-spacer>
               <v-btn-toggle v-model="viewMode" mandatory variant="outlined" divided density="compact">
                 <v-btn value="card" size="small"><v-icon>mdi-view-grid</v-icon></v-btn>
@@ -234,7 +231,8 @@ const getDealColor = (index) => {
               </v-avatar>
               <div class="flex-grow-1">
                 <h3 class="text-h6 font-weight-bold text-truncate mb-1">{{ deal.title }}</h3>
-                <v-chip :color="getStageColor(deal.stage)" size="x-small" variant="flat" class="text-capitalize font-weight-bold">
+                <v-chip :color="getStageColor(deal.stage)" size="x-small" variant="flat"
+                  class="text-capitalize font-weight-bold">
                   {{ deal.stage }}
                 </v-chip>
               </div>
@@ -306,7 +304,8 @@ const getDealColor = (index) => {
               <span class="font-weight-bold text-green">{{ formatCurrency(item.amount) }}</span>
             </template>
             <template v-slot:item.stage="{ item }">
-              <v-chip :color="getStageColor(item.stage)" size="small" variant="flat" class="text-capitalize font-weight-bold">
+              <v-chip :color="getStageColor(item.stage)" size="small" variant="flat"
+                class="text-capitalize font-weight-bold">
                 {{ item.stage }}
               </v-chip>
             </template>
@@ -339,7 +338,8 @@ const getDealColor = (index) => {
       <v-card>
         <v-card-title class="pa-4 bg-grey-lighten-4">
           <div class="d-flex align-center">
-            <v-icon class="mr-2" color="primary">{{ editedIndex === -1 ? 'mdi-handshake-outline' : 'mdi-handshake' }}</v-icon>
+            <v-icon class="mr-2" color="primary">{{ editedIndex === -1 ? 'mdi-handshake-outline' : 'mdi-handshake'
+            }}</v-icon>
             <span class="text-h6 font-weight-bold">{{ editedIndex === -1 ? 'New Deal' : 'Edit Deal' }}</span>
           </div>
         </v-card-title>
@@ -348,69 +348,29 @@ const getDealColor = (index) => {
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  v-model="editedItem.title"
-                  label="Deal Title *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-text"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="editedItem.title" label="Deal Title *" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-text" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model.number="editedItem.amount"
-                  label="Amount *"
-                  type="number"
-                  prefix="$"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-currency-usd"
-                  required
-                ></v-text-field>
+                <v-text-field v-model.number="editedItem.amount" label="Amount *" type="number" prefix="$"
+                  variant="outlined" color="primary" prepend-inner-icon="mdi-currency-usd" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.stage"
-                  :items="stageOptions"
-                  label="Stage *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-chart-timeline-variant"
-                  required
-                ></v-select>
+                <v-select v-model="editedItem.stage" :items="stageOptions" label="Stage *" variant="outlined"
+                  color="primary" prepend-inner-icon="mdi-chart-timeline-variant" required></v-select>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.company"
-                  :items="companies"
-                  item-title="name"
-                  item-value="id"
-                  label="Company"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-office-building"
-                  clearable
-                  hint="Optional: Link this deal to a company"
-                  persistent-hint
-                ></v-select>
+                <v-select v-model="editedItem.company" :items="companies" item-title="name" item-value="id"
+                  label="Company" variant="outlined" color="primary" prepend-inner-icon="mdi-office-building" clearable
+                  hint="Optional: Link this deal to a company" persistent-hint></v-select>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.contact"
-                  :items="contacts"
-                  item-title="email"
-                  item-value="id"
-                  label="Contact"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-account"
-                  clearable
-                  hint="Optional: Link this deal to a contact"
-                  persistent-hint
-                >
+                <v-select v-model="editedItem.contact" :items="contacts" item-title="email" item-value="id"
+                  label="Contact" variant="outlined" color="primary" prepend-inner-icon="mdi-account" clearable
+                  hint="Optional: Link this deal to a contact" persistent-hint>
                   <template v-slot:item="{ props, item }">
-                    <v-list-item v-bind="props" :title="`${item.raw.first_name} ${item.raw.last_name}`" :subtitle="item.raw.email"></v-list-item>
+                    <v-list-item v-bind="props" :title="`${item.raw.first_name} ${item.raw.last_name}`"
+                      :subtitle="item.raw.email"></v-list-item>
                   </template>
                   <template v-slot:selection="{ item }">
                     {{ item.raw.first_name }} {{ item.raw.last_name }}
@@ -418,14 +378,8 @@ const getDealColor = (index) => {
                 </v-select>
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  v-model="editedItem.expected_close_date"
-                  label="Expected Close Date"
-                  type="date"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-calendar"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.expected_close_date" label="Expected Close Date" type="date"
+                  variant="outlined" color="primary" prepend-inner-icon="mdi-calendar"></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -433,9 +387,21 @@ const getDealColor = (index) => {
         <v-divider></v-divider>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="grey" variant="text" @click="close" size="large">Cancel</v-btn>
-          <v-btn color="primary" variant="flat" @click="save" size="large" prepend-icon="mdi-content-save">Save Deal</v-btn>
+          <v-btn color="grey" variant="text" @click="close" size="large" :disabled="saving">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" variant="flat" @click="save" size="large" prepend-icon="mdi-content-save"
+            :disabled="saving">
+            <span v-if="saving">
+              <v-progress-circular indeterminate color="white" size="18" class="mr-2"></v-progress-circular>
+              Saving...
+            </span>
+            <span v-else>
+              Save Deal
+            </span>
+          </v-btn>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
   </v-container>
