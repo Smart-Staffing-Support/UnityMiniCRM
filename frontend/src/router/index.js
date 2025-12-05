@@ -1,66 +1,73 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import DashboardView from '../views/DashboardView.vue'
-import ContactsView from '../views/ContactsView.vue'
-import CompaniesView from '../views/CompaniesView.vue'
-import DealsView from '../views/DealsView.vue'
-import TasksView from '../views/TasksView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import LoginView from "../views/LoginView.vue";
+import DashboardView from "../views/DashboardView.vue";
+import ContactsView from "../views/ContactsView.vue";
+import CompaniesView from "../views/CompaniesView.vue";
+import DealsView from "../views/DealsView.vue";
+import TasksView from "../views/TasksView.vue";
+import TimelineView from "../views/TimelineView.vue";
 
 const routes = [
   {
-    path: '/login',
-    name: 'Login',
+    path: "/login",
+    name: "Login",
     component: LoginView,
-    meta: { requiresGuest: true }
+    meta: { requiresGuest: true },
   },
   {
-    path: '/',
-    name: 'Dashboard',
+    path: "/",
+    name: "Dashboard",
     component: DashboardView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
-    path: '/contacts',
-    name: 'Contacts',
+    path: "/contacts",
+    name: "Contacts",
     component: ContactsView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
-    path: '/companies',
-    name: 'Companies',
+    path: "/companies",
+    name: "Companies",
     component: CompaniesView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
-    path: '/deals',
-    name: 'Deals',
+    path: "/deals",
+    name: "Deals",
     component: DealsView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
-    path: '/tasks',
-    name: 'Tasks',
+    path: "/tasks",
+    name: "Tasks",
     component: TasksView,
-    meta: { requiresAuth: true }
-  }
-]
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/timeline",
+    name: "Timeline",
+    component: TimelineView,
+    meta: { requiresAuth: true },
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const isAuthenticated = !!token
+  const token = localStorage.getItem("token");
+  const isAuthenticated = !!token;
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login')
+    next("/login");
   } else if (to.meta.requiresGuest && isAuthenticated) {
-    next('/')
+    next("/");
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

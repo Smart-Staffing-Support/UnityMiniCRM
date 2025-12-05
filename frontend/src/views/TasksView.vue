@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { crmService } from '../services/api'
 
+const saving = ref(false);
+
 const tasks = ref([])
 const deals = ref([])
 const contacts = ref([])
@@ -151,16 +153,27 @@ const close = () => {
 }
 
 const save = async () => {
+  saving.value = true;
   try {
+    const payload = { ...editedItem.value }
+    if (payload.assigned_to) {
+      const contact = contacts.value.find(c => c.id === payload.assigned_to)
+      if (contact && contact.created_by) {
+        payload.assigned_to = contact.created_by.id
+      }
+    }
     if (editedIndex.value > -1) {
-      await crmService.updateTask(editedItem.value.id, editedItem.value)
+      await crmService.updateTask(editedItem.value.id, payload)
     } else {
-      await crmService.createTask(editedItem.value)
+      await crmService.createTask(payload)
     }
     await loadTasks()
     close()
   } catch (error) {
     console.error('Failed to save task:', error)
+    alert('An unexpected error occurred while saving the task.')
+  } finally {
+    saving.value = false;
   }
 }
 
@@ -200,17 +213,8 @@ const getTaskColor = (index) => {
         <v-card elevation="2" class="mb-4">
           <v-card-text class="pa-4">
             <div class="d-flex align-center gap-3 flex-wrap">
-              <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                label="Search tasks..."
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-                class="flex-grow-1"
-                style="max-width: 400px;"
-              ></v-text-field>
+              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search tasks..." variant="outlined"
+                density="compact" hide-details clearable class="flex-grow-1" style="max-width: 400px;"></v-text-field>
               <v-spacer></v-spacer>
               <v-btn-toggle v-model="viewMode" mandatory variant="outlined" divided density="compact">
                 <v-btn value="card" size="small"><v-icon>mdi-view-grid</v-icon></v-btn>
@@ -230,7 +234,8 @@ const getTaskColor = (index) => {
 
     <v-row v-else-if="viewMode === 'card'">
       <v-col v-for="(task, index) in filteredTasks" :key="task.id" cols="12" sm="6" md="4" lg="3">
-        <v-card elevation="3" class="task-card h-100" hover :class="{ 'overdue-card': isOverdue(task.due_date, task.status) }">
+        <v-card elevation="3" class="task-card h-100" hover
+          :class="{ 'overdue-card': isOverdue(task.due_date, task.status) }">
           <v-card-text class="pa-4">
             <div class="d-flex align-center mb-3">
               <v-avatar :color="getTaskColor(index)" size="48" class="mr-3">
@@ -238,10 +243,12 @@ const getTaskColor = (index) => {
               </v-avatar>
               <div class="flex-grow-1">
                 <div class="d-flex align-center gap-1 mb-1">
-                  <v-chip :color="getPriorityColor(task.priority)" size="x-small" variant="flat" class="text-capitalize font-weight-bold">
+                  <v-chip :color="getPriorityColor(task.priority)" size="x-small" variant="flat"
+                    class="text-capitalize font-weight-bold">
                     {{ task.priority }}
                   </v-chip>
-                  <v-chip v-if="isOverdue(task.due_date, task.status)" color="error" size="x-small" variant="flat" prepend-icon="mdi-alert">
+                  <v-chip v-if="isOverdue(task.due_date, task.status)" color="error" size="x-small" variant="flat"
+                    prepend-icon="mdi-alert">
                     Overdue
                   </v-chip>
                 </div>
@@ -249,7 +256,8 @@ const getTaskColor = (index) => {
             </div>
 
             <h3 class="text-h6 font-weight-bold mb-2">{{ task.title }}</h3>
-            <p v-if="task.description" class="text-caption text-grey-darken-1 mb-3 task-description">{{ task.description }}</p>
+            <p v-if="task.description" class="text-caption text-grey-darken-1 mb-3 task-description">{{ task.description
+            }}</p>
 
             <v-divider class="my-3"></v-divider>
 
@@ -267,8 +275,10 @@ const getTaskColor = (index) => {
               </div>
 
               <div class="d-flex align-center" v-if="task.due_date">
-                <v-icon size="small" class="mr-2" :color="isOverdue(task.due_date, task.status) ? 'error' : 'grey-darken-1'">mdi-calendar</v-icon>
-                <span class="text-caption" :class="{ 'text-error font-weight-bold': isOverdue(task.due_date, task.status) }">
+                <v-icon size="small" class="mr-2"
+                  :color="isOverdue(task.due_date, task.status) ? 'error' : 'grey-darken-1'">mdi-calendar</v-icon>
+                <span class="text-caption"
+                  :class="{ 'text-error font-weight-bold': isOverdue(task.due_date, task.status) }">
                   {{ formatDate(task.due_date) }}
                 </span>
               </div>
@@ -316,12 +326,14 @@ const getTaskColor = (index) => {
               </div>
             </template>
             <template v-slot:item.status="{ item }">
-              <v-chip :color="getStatusColor(item.status)" size="small" variant="flat" class="text-capitalize font-weight-bold">
+              <v-chip :color="getStatusColor(item.status)" size="small" variant="flat"
+                class="text-capitalize font-weight-bold">
                 {{ item.status.replace('_', ' ') }}
               </v-chip>
             </template>
             <template v-slot:item.priority="{ item }">
-              <v-chip :color="getPriorityColor(item.priority)" size="small" variant="tonal" class="text-capitalize font-weight-bold">
+              <v-chip :color="getPriorityColor(item.priority)" size="small" variant="tonal"
+                class="text-capitalize font-weight-bold">
                 {{ item.priority }}
               </v-chip>
             </template>
@@ -355,97 +367,48 @@ const getTaskColor = (index) => {
       <v-card>
         <v-card-title class="pa-4 bg-grey-lighten-4">
           <div class="d-flex align-center">
-            <v-icon class="mr-2" color="primary">{{ editedIndex === -1 ? 'mdi-clipboard-plus' : 'mdi-clipboard-edit' }}</v-icon>
+            <v-icon class="mr-2" color="primary">{{ editedIndex === -1 ? 'mdi-clipboard-plus' : 'mdi-clipboard-edit'
+            }}</v-icon>
             <span class="text-h6 font-weight-bold">{{ editedIndex === -1 ? 'New Task' : 'Edit Task' }}</span>
           </div>
         </v-card-title>
+        
         <v-divider></v-divider>
         <v-card-text class="pa-6">
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  v-model="editedItem.title"
-                  label="Task Title *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-text"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="editedItem.title" label="Task Title *" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-text" required></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-textarea
-                  v-model="editedItem.description"
-                  label="Description"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-text-box"
-                  rows="3"
-                ></v-textarea>
+                <v-textarea v-model="editedItem.description" label="Description" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-text-box" rows="3"></v-textarea>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-select
-                  v-model="editedItem.status"
-                  :items="statusOptions"
-                  label="Status *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-chart-timeline-variant"
-                  required
-                ></v-select>
+                <v-select v-model="editedItem.status" :items="statusOptions" label="Status *" variant="outlined"
+                  color="primary" prepend-inner-icon="mdi-chart-timeline-variant" required></v-select>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-select
-                  v-model="editedItem.priority"
-                  :items="priorityOptions"
-                  label="Priority *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-flag"
-                  required
-                ></v-select>
+                <v-select v-model="editedItem.priority" :items="priorityOptions" label="Priority *" variant="outlined"
+                  color="primary" prepend-inner-icon="mdi-flag" required></v-select>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-text-field
-                  v-model="editedItem.due_date"
-                  label="Due Date"
-                  type="date"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-calendar"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.due_date" label="Due Date" type="date" variant="outlined"
+                  color="primary" prepend-inner-icon="mdi-calendar"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.deal"
-                  :items="deals"
-                  item-title="title"
-                  item-value="id"
-                  label="Related Deal"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-handshake"
-                  clearable
-                  hint="Optional: Link this task to a deal"
-                  persistent-hint
-                ></v-select>
+                <v-select v-model="editedItem.deal" :items="deals" item-title="title" item-value="id"
+                  label="Related Deal" variant="outlined" color="primary" prepend-inner-icon="mdi-handshake" clearable
+                  hint="Optional: Link this task to a deal" persistent-hint></v-select>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.assigned_to"
-                  :items="contacts"
-                  item-title="email"
-                  item-value="id"
-                  label="Assign To"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-account"
-                  clearable
-                  hint="Optional: Assign this task to a contact"
-                  persistent-hint
-                >
+                <v-select v-model="editedItem.assigned_to" :items="contacts" item-title="email" item-value="id"
+                  label="Assign To" variant="outlined" color="primary" prepend-inner-icon="mdi-account" clearable
+                  hint="Optional: Assign this task to a contact" persistent-hint>
                   <template v-slot:item="{ props, item }">
-                    <v-list-item v-bind="props" :title="`${item.raw.first_name} ${item.raw.last_name}`" :subtitle="item.raw.email"></v-list-item>
+                    <v-list-item v-bind="props" :title="`${item.raw.first_name} ${item.raw.last_name}`"
+                      :subtitle="item.raw.email"></v-list-item>
                   </template>
                   <template v-slot:selection="{ item }">
                     {{ item.raw.first_name }} {{ item.raw.last_name }}
@@ -458,8 +421,19 @@ const getTaskColor = (index) => {
         <v-divider></v-divider>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="grey" variant="text" @click="close" size="large">Cancel</v-btn>
-          <v-btn color="primary" variant="flat" @click="save" size="large" prepend-icon="mdi-content-save">Save Task</v-btn>
+          <v-btn color="grey" variant="text" @click="close" size="large" :disabled="saving">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" variant="flat" size="large" prepend-icon="mdi-content-save" @click="save"
+            :disabled="saving">
+            <span v-if="saving">
+              <v-progress-circular indeterminate color="white" size="18" class="mr-2"></v-progress-circular>
+              Saving...
+            </span>
+            <span v-else>
+              Save Task
+            </span>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

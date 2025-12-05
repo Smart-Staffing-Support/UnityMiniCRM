@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; }
+    h2 { color: #1a237e; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h2>New Deal Created: {{ deal.title }}</h2>
+  <p><strong>Amount:</strong> {{ deal.amount }}</p>
+  <p><strong>Stage:</strong> {{ deal.stage }}</p>
+  <p><strong>Probability:</strong> {{ deal.probability }}%</p>
+  <p><strong>Expected Close Date:</strong> {{ deal.expected_close_date }}</p>
+
+  {% if tasks %}
+    <h3>Tasks</h3>
+    <ul>
+      {% for task in tasks %}
+        <li>{{ task.title }} - Assigned To: {{ task.assigned_to }} - Status: {{ task.status }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</body>
+</html>

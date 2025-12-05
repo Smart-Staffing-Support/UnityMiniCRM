@@ -1,116 +1,150 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { crmService } from '../services/api'
+import { ref, onMounted, computed } from "vue";
+import { crmService } from "../services/api";
 
-const companies = ref([])
-const loading = ref(true)
-const dialog = ref(false)
-const viewMode = ref('card') // 'card' or 'table'
-const search = ref('')
-const editedIndex = ref(-1)
+const saving = ref(false);
+
+const companies = ref([]);
+const loading = ref(true);
+const dialog = ref(false);
+const viewMode = ref("card");
+const search = ref("");
+const editedIndex = ref(-1);
 const editedItem = ref({
-  name: '',
-  industry: '',
-  website: '',
-  phone: '',
-  email: '',
-  address: ''
-})
+  name: "",
+  industry: "",
+  website: "",
+  phone: "",
+  email: "",
+  address: "",
+});
 
 const defaultItem = {
-  name: '',
-  industry: '',
-  website: '',
-  phone: '',
-  email: '',
-  address: ''
-}
+  name: "",
+  industry: "",
+  website: "",
+  phone: "",
+  email: "",
+  address: "",
+};
 
 const headers = [
-  { title: 'Company', key: 'name', sortable: true },
-  { title: 'Industry', key: 'industry', sortable: true },
-  { title: 'Email', key: 'email', sortable: false },
-  { title: 'Phone', key: 'phone', sortable: false },
-  { title: 'Actions', key: 'actions', sortable: false, align: 'end' }
-]
+  { title: "Company", key: "name", sortable: true },
+  { title: "Industry", key: "industry", sortable: true },
+  { title: "Email", key: "email", sortable: false },
+  { title: "Phone", key: "phone", sortable: false },
+  { title: "Actions", key: "actions", sortable: false, align: "end" },
+];
 
 const filteredCompanies = computed(() => {
-  if (!search.value) return companies.value
-  const searchLower = search.value.toLowerCase()
-  return companies.value.filter(company =>
-    company.name?.toLowerCase().includes(searchLower) ||
-    company.industry?.toLowerCase().includes(searchLower) ||
-    company.email?.toLowerCase().includes(searchLower)
-  )
-})
+  if (!search.value) return companies.value;
+  const searchLower = search.value.toLowerCase();
+  return companies.value.filter(
+    (company) =>
+      company.name?.toLowerCase().includes(searchLower) ||
+      company.industry?.toLowerCase().includes(searchLower) ||
+      company.email?.toLowerCase().includes(searchLower)
+  );
+});
 
 onMounted(async () => {
-  await loadCompanies()
-})
+  await loadCompanies();
+});
 
 const loadCompanies = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    companies.value = await crmService.getCompanies()
+    companies.value = await crmService.getCompanies();
   } catch (error) {
-    console.error('Failed to load companies:', error)
+    console.error("Failed to load companies:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const editItem = (item) => {
-  editedIndex.value = companies.value.indexOf(item)
-  editedItem.value = Object.assign({}, item)
-  dialog.value = true
-}
+  editedIndex.value = companies.value.indexOf(item);
+  editedItem.value = Object.assign({}, item);
+  dialog.value = true;
+};
 
 const deleteItem = async (item) => {
-  if (confirm('Are you sure you want to delete this company?')) {
+  if (confirm("Are you sure you want to delete this company?")) {
     try {
-      await crmService.deleteCompany(item.id)
-      await loadCompanies()
+      await crmService.deleteCompany(item.id);
+      await loadCompanies();
     } catch (error) {
-      console.error('Failed to delete company:', error)
+      console.error("Failed to delete company:", error);
     }
   }
-}
+};
 
 const close = () => {
-  dialog.value = false
+  dialog.value = false;
   setTimeout(() => {
-    editedItem.value = Object.assign({}, defaultItem)
-    editedIndex.value = -1
-  }, 300)
-}
+    editedItem.value = Object.assign({}, defaultItem);
+    editedIndex.value = -1;
+  }, 300);
+};
 
 const save = async () => {
+  saving.value = true; 
   try {
     if (editedIndex.value > -1) {
-      await crmService.updateCompany(editedItem.value.id, editedItem.value)
+      await crmService.updateCompany(editedItem.value.id, editedItem.value);
     } else {
-      await crmService.createCompany(editedItem.value)
+      await crmService.createCompany(editedItem.value);
     }
-    await loadCompanies()
-    close()
+    await loadCompanies();
+    close();
   } catch (error) {
-    console.error('Failed to save company:', error)
+    if (error.response && error.response.data) {
+      const errors = error.response.data;
+      let messages = [];
+
+      for (const key in errors) {
+        const value = errors[key];
+        if (Array.isArray(value)) {
+          messages.push(`${key}: ${value.join(", ")}`);
+        } else if (typeof value === "string") {
+          messages.push(`${key}: ${value}`);
+        } else {
+          messages.push(`${key}: ${JSON.stringify(value)}`);
+        }
+      }
+
+      alert(`Failed to save company:\n${messages.join("\n")}`);
+    } else {
+      console.error("Failed to save company:", error);
+      alert("An unexpected error occurred while saving the company.");
+    }
+  } finally {
+    saving.value = false;
   }
-}
+};
 
 const getCompanyInitials = (name) => {
-  if (!name) return '?'
-  const words = name.split(' ')
+  if (!name) return "?";
+  const words = name.split(" ");
   if (words.length >= 2) {
-    return words[0][0] + words[1][0]
+    return words[0][0] + words[1][0];
   }
-  return name.substring(0, 2)
-}
+  return name.substring(0, 2);
+};
 
 const getCompanyColor = (index) => {
-  const colors = ['primary', 'secondary', 'success', 'info', 'warning', 'purple', 'pink', 'indigo']
-  return colors[index % colors.length]
-}
+  const colors = [
+    "primary",
+    "secondary",
+    "success",
+    "info",
+    "warning",
+    "purple",
+    "pink",
+    "indigo",
+  ];
+  return colors[index % colors.length];
+};
 </script>
 
 <template>
@@ -121,15 +155,11 @@ const getCompanyColor = (index) => {
         <div class="d-flex justify-space-between align-center mb-6 flex-wrap gap-3">
           <div>
             <h1 class="text-h3 font-weight-bold text-navy mb-2">Companies</h1>
-            <p class="text-h6 text-grey-darken-1">Manage your business relationships</p>
+            <p class="text-h6 text-grey-darken-1">
+              Manage your business relationships
+            </p>
           </div>
-          <v-btn
-            color="primary"
-            size="large"
-            prepend-icon="mdi-plus"
-            @click="dialog = true"
-            elevation="2"
-          >
+          <v-btn color="primary" size="large" prepend-icon="mdi-plus" @click="dialog = true" elevation="2">
             Add Company
           </v-btn>
         </div>
@@ -142,27 +172,13 @@ const getCompanyColor = (index) => {
         <v-card elevation="2" class="mb-4">
           <v-card-text class="pa-4">
             <div class="d-flex align-center gap-3 flex-wrap">
-              <v-text-field
-                v-model="search"
-                prepend-inner-icon="mdi-magnify"
-                label="Search companies..."
-                variant="outlined"
-                density="compact"
-                hide-details
-                clearable
-                class="flex-grow-1"
-                style="max-width: 400px;"
-              ></v-text-field>
-              
+              <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search companies..."
+                variant="outlined" density="compact" hide-details clearable class="flex-grow-1"
+                style="max-width: 400px"></v-text-field>
+
               <v-spacer></v-spacer>
-              
-              <v-btn-toggle
-                v-model="viewMode"
-                mandatory
-                variant="outlined"
-                divided
-                density="compact"
-              >
+
+              <v-btn-toggle v-model="viewMode" mandatory variant="outlined" divided density="compact">
                 <v-btn value="card" size="small">
                   <v-icon>mdi-view-grid</v-icon>
                 </v-btn>
@@ -184,29 +200,22 @@ const getCompanyColor = (index) => {
 
     <!-- Card View -->
     <v-row v-else-if="viewMode === 'card'">
-      <v-col
-        v-for="(company, index) in filteredCompanies"
-        :key="company.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
+      <v-col v-for="(company, index) in filteredCompanies" :key="company.id" cols="12" sm="6" md="4" lg="3">
         <v-card elevation="3" class="company-card h-100" hover>
           <v-card-text class="pa-4">
             <div class="d-flex align-center mb-3">
-              <v-avatar
-                :color="getCompanyColor(index)"
-                size="48"
-                class="mr-3"
-              >
+              <v-avatar :color="getCompanyColor(index)" size="48" class="mr-3">
                 <span class="text-h6 font-weight-bold text-white">
                   {{ getCompanyInitials(company.name) }}
                 </span>
               </v-avatar>
               <div class="flex-grow-1">
-                <h3 class="text-h6 font-weight-bold text-truncate">{{ company.name }}</h3>
-                <p class="text-caption text-grey text-truncate">{{ company.industry || 'No industry' }}</p>
+                <h3 class="text-h6 font-weight-bold text-truncate">
+                  {{ company.name }}
+                </h3>
+                <p class="text-caption text-grey text-truncate">
+                  {{ company.industry || "No industry" }}
+                </p>
               </div>
             </div>
 
@@ -215,7 +224,9 @@ const getCompanyColor = (index) => {
             <div class="company-details">
               <div class="d-flex align-center mb-2" v-if="company.email">
                 <v-icon size="small" class="mr-2" color="grey-darken-1">mdi-email</v-icon>
-                <span class="text-caption text-truncate">{{ company.email }}</span>
+                <span class="text-caption text-truncate">{{
+                  company.email
+                  }}</span>
               </div>
               <div class="d-flex align-center mb-2" v-if="company.phone">
                 <v-icon size="small" class="mr-2" color="grey-darken-1">mdi-phone</v-icon>
@@ -231,23 +242,11 @@ const getCompanyColor = (index) => {
           </v-card-text>
 
           <v-card-actions class="pa-3 pt-0">
-            <v-btn
-              size="small"
-              variant="text"
-              color="primary"
-              prepend-icon="mdi-pencil"
-              @click="editItem(company)"
-            >
+            <v-btn size="small" variant="text" color="primary" prepend-icon="mdi-pencil" @click="editItem(company)">
               Edit
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn
-              size="small"
-              variant="text"
-              color="error"
-              icon="mdi-delete"
-              @click="deleteItem(company)"
-            ></v-btn>
+            <v-btn size="small" variant="text" color="error" icon="mdi-delete" @click="deleteItem(company)"></v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -258,7 +257,11 @@ const getCompanyColor = (index) => {
             <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-office-building-outline</v-icon>
             <h3 class="text-h5 mb-2 text-grey-darken-1">No companies found</h3>
             <p class="text-body-2 text-grey mb-4">
-              {{ search ? 'Try adjusting your search' : 'Get started by adding your first company' }}
+              {{
+                search
+                  ? "Try adjusting your search"
+                  : "Get started by adding your first company"
+              }}
             </p>
             <v-btn v-if="!search" color="primary" @click="dialog = true" prepend-icon="mdi-plus">
               Add Company
@@ -272,12 +275,7 @@ const getCompanyColor = (index) => {
     <v-row v-else>
       <v-col cols="12">
         <v-card elevation="3">
-          <v-data-table
-            :headers="headers"
-            :items="filteredCompanies"
-            :loading="loading"
-            items-per-page="15"
-          >
+          <v-data-table :headers="headers" :items="filteredCompanies" :loading="loading" items-per-page="15">
             <template v-slot:item.name="{ item, index }">
               <div class="d-flex align-center py-2">
                 <v-avatar :color="getCompanyColor(index)" size="36" class="mr-3">
@@ -317,10 +315,14 @@ const getCompanyColor = (index) => {
         <v-card-title class="pa-4 bg-grey-lighten-4">
           <div class="d-flex align-center">
             <v-icon class="mr-2" color="primary">
-              {{ editedIndex === -1 ? 'mdi-office-building-plus' : 'mdi-office-building-edit' }}
+              {{
+                editedIndex === -1
+                  ? "mdi-office-building-plus"
+                  : "mdi-office-building-edit"
+              }}
             </v-icon>
             <span class="text-h6 font-weight-bold">
-              {{ editedIndex === -1 ? 'New Company' : 'Edit Company' }}
+              {{ editedIndex === -1 ? "New Company" : "Edit Company" }}
             </span>
           </div>
         </v-card-title>
@@ -329,62 +331,28 @@ const getCompanyColor = (index) => {
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  v-model="editedItem.name"
-                  label="Company Name *"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-office-building"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="editedItem.name" label="Company Name *" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-office-building" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="editedItem.industry"
-                  label="Industry"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-domain"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.industry" label="Industry" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-domain"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="editedItem.email"
-                  label="Email"
-                  type="email"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-email"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.email" label="Email" type="email" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-email"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="editedItem.phone"
-                  label="Phone"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-phone"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.phone" label="Phone" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-phone"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="editedItem.website"
-                  label="Website"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-web"
-                  placeholder="https://example.com"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.website" label="Website" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-web" placeholder="https://example.com"></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-textarea
-                  v-model="editedItem.address"
-                  label="Address"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-map-marker"
-                  rows="3"
-                ></v-textarea>
+                <v-textarea v-model="editedItem.address" label="Address" variant="outlined" color="primary"
+                  prepend-inner-icon="mdi-map-marker" rows="3"></v-textarea>
               </v-col>
             </v-row>
           </v-container>
@@ -392,11 +360,18 @@ const getCompanyColor = (index) => {
         <v-divider></v-divider>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="grey" variant="text" @click="close" size="large">Cancel</v-btn>
-          <v-btn color="primary" variant="flat" @click="save" size="large" prepend-icon="mdi-content-save">
-            Save Company
+          <v-btn color="grey" variant="text" @click="close" size="large" :disabled="saving">Cancel</v-btn>
+
+          <v-btn color="primary" variant="flat" size="large" prepend-icon="mdi-content-save" @click="save"
+            :disabled="saving">
+            <span v-if="saving">
+              <v-progress-circular indeterminate color="white" size="18" class="mr-2"></v-progress-circular>
+              Saving...
+            </span>
+            <span v-else>Save Company</span>
           </v-btn>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
   </v-container>
