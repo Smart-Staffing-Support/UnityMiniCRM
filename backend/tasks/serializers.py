@@ -82,7 +82,6 @@ class TaskSerializer(serializers.ModelSerializer):
         return None
 
     def validate(self, data):
-        print("DEBUG validate raw data:", data)
         assigned_to = data.get('assigned_to')
 
         if assigned_to:
