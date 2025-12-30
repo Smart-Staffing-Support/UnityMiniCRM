@@ -57,7 +57,7 @@ interview/
 
 ### Prerequisites
 - Python 3.8+
-- Node.js 16+
+- Node.js 18+
 - npm or yarn
 
 2. Log in with the demo credentials:
@@ -69,10 +69,6 @@ interview/
    - Create, edit, and delete records
 
 ## API Endpoints
-
-### Authentication
-- `POST /api/auth/login/` - User login
-- `POST /api/auth/logout/` - User logout
 
 ### Dashboard
 - `GET /api/dashboard/stats/` - Get dashboard statistics
