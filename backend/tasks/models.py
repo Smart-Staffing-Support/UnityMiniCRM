@@ -104,3 +104,30 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Interaction(models.Model):
+    INTERACTION_TYPE_CHOICES = [
+        ('call', 'Call'),
+        ('email', 'Email'),
+        ('meeting', 'Meeting'),
+        ('note', 'Note'),
+    ]
+
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name='interactions')
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, related_name='interactions')
+    deal = models.ForeignKey(Deal, on_delete=models.SET_NULL, null=True, blank=True, related_name='interactions')
+    interaction_type = models.CharField(max_length=20, choices=INTERACTION_TYPE_CHOICES)
+    subject = models.CharField(max_length=200)
+    notes = models.TextField(blank=True)
+    interaction_date = models.DateTimeField()
+    follow_up_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='interactions')
+
+    class Meta:
+        ordering = ['-interaction_date']
+
+    def __str__(self):
+        return f"{self.get_interaction_type_display()} - {self.subject}"
