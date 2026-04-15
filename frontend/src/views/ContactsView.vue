@@ -33,6 +33,8 @@ const headers = [
   { title: 'Phone', key: 'phone', sortable: false },
   { title: 'Company', key: 'company_name', sortable: true },
   { title: 'Position', key: 'position', sortable: false },
+  { title: 'Interactions', key: 'interactions_count', sortable: true },
+  { title: 'Last Interaction', key: 'last_interaction_date', sortable: true },
   { title: 'Actions', key: 'actions', sortable: false, align: 'end' }
 ]
 
@@ -43,7 +45,8 @@ const filteredContacts = computed(() => {
     contact.first_name && contact.first_name.toLowerCase().includes(searchLower) ||
     contact.last_name && contact.last_name.toLowerCase().includes(searchLower) ||
     contact.email && contact.email.toLowerCase().includes(searchLower) ||
-    contact.company_name && contact.company_name.toLowerCase().includes(searchLower)
+    contact.company_name && contact.company_name.toLowerCase().includes(searchLower) ||
+    String(contact.interactions_count || 0).includes(searchLower)
   )
 })
 
@@ -119,6 +122,17 @@ const getAvatarColor = (index) => {
   const colors = ['primary', 'secondary', 'success', 'info', 'warning', 'purple', 'pink', 'indigo', 'teal', 'orange']
   return colors[index % colors.length]
 }
+
+const formatDateTime = (dateValue) => {
+  if (!dateValue) return 'No interactions yet'
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(dateValue))
+}
 </script>
 
 <template>
@@ -181,9 +195,29 @@ const getAvatarColor = (index) => {
             </v-avatar>
             <h3 class="text-h6 font-weight-bold mb-1">{{ contact.first_name }} {{ contact.last_name }}</h3>
             <p class="text-caption text-grey mb-3">{{ contact.position || 'No position' }}</p>
-            
+
+            <div class="d-flex justify-center mb-3 flex-wrap gap-2">
+              <v-chip
+                color="primary"
+                size="small"
+                variant="tonal"
+                prepend-icon="mdi-message-text-outline"
+              >
+                {{ contact.interactions_count || 0 }} interaction<span v-if="(contact.interactions_count || 0) !== 1">s</span>
+              </v-chip>
+
+              <v-chip
+                v-if="!contact.last_interaction_date"
+                color="grey"
+                size="small"
+                variant="tonal"
+              >
+                No activity yet
+              </v-chip>
+            </div>
+
             <v-divider class="my-3"></v-divider>
-            
+
             <div class="contact-details text-left">
               <div class="d-flex align-center mb-2" v-if="contact.company_name">
                 <v-icon size="small" class="mr-2" color="grey-darken-1">mdi-office-building</v-icon>
@@ -193,9 +227,16 @@ const getAvatarColor = (index) => {
                 <v-icon size="small" class="mr-2" color="grey-darken-1">mdi-email</v-icon>
                 <span class="text-caption text-truncate">{{ contact.email }}</span>
               </div>
-              <div class="d-flex align-center" v-if="contact.phone">
+              <div class="d-flex align-center mb-2" v-if="contact.phone">
                 <v-icon size="small" class="mr-2" color="grey-darken-1">mdi-phone</v-icon>
                 <span class="text-caption">{{ contact.phone }}</span>
+              </div>
+              <div class="d-flex align-start" v-if="contact.last_interaction_date">
+                <v-icon size="small" class="mr-2 mt-1" color="grey-darken-1">mdi-clock-outline</v-icon>
+                <span class="text-caption">
+                  Last interaction:<br>
+                  <span class="font-weight-medium">{{ formatDateTime(contact.last_interaction_date) }}</span>
+                </span>
               </div>
             </div>
           </v-card-text>
@@ -237,12 +278,25 @@ const getAvatarColor = (index) => {
                 <span class="font-weight-medium">{{ item.first_name }} {{ item.last_name }}</span>
               </div>
             </template>
+
             <template v-slot:item.company_name="{ item }">
               <v-chip v-if="item.company_name" size="small" variant="tonal" prepend-icon="mdi-office-building">
                 {{ item.company_name }}
               </v-chip>
               <span v-else class="text-grey">-</span>
             </template>
+
+            <template v-slot:item.interactions_count="{ item }">
+              <v-chip color="primary" size="small" variant="tonal" prepend-icon="mdi-message-text-outline">
+                {{ item.interactions_count || 0 }}
+              </v-chip>
+            </template>
+
+            <template v-slot:item.last_interaction_date="{ item }">
+              <span v-if="item.last_interaction_date">{{ formatDateTime(item.last_interaction_date) }}</span>
+              <span v-else class="text-grey">No interactions yet</span>
+            </template>
+
             <template v-slot:item.actions="{ item }">
               <v-icon size="small" class="mr-2" @click="editItem(item)" color="primary">mdi-pencil</v-icon>
               <v-icon size="small" @click="deleteItem(item)" color="error">mdi-delete</v-icon>
@@ -320,7 +374,7 @@ const getAvatarColor = (index) => {
 }
 
 .contact-details {
-  min-height: 72px;
+  min-height: 120px;
 }
 
 .text-navy {

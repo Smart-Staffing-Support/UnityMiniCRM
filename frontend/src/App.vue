@@ -60,8 +60,15 @@ const menuItems = [
     color: '#0288D1',
     gradient: 'linear-gradient(135deg, #039BE5 0%, #01579B 100%)'
   },
+  { 
+    title: 'Interactions', 
+    icon: 'mdi-message-text-outline', 
+    route: '/interactions',
+    description: 'Calls, emails & notes',
+    color: '#5E35B1',
+    gradient: 'linear-gradient(135deg, #5E35B1 0%, #3949AB 100%)'
+  },
 ]
-
 const handleLogout = async () => {
   try {
     await authService.logout()
@@ -160,6 +167,7 @@ const getItemGradient = (item) => {
                 <v-list-item prepend-icon="mdi-office-building-plus" title="New Company" @click="router.push('/companies')"></v-list-item>
                 <v-list-item prepend-icon="mdi-handshake" title="New Deal" @click="router.push('/deals')"></v-list-item>
                 <v-list-item prepend-icon="mdi-plus" title="New Task" @click="router.push('/tasks')"></v-list-item>
+                <v-list-item prepend-icon="mdi-message-plus" title="New Interaction" @click="router.push('/interactions')"></v-list-item>
               </v-list>
             </v-menu>
             

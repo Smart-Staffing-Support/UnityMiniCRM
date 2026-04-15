@@ -31,13 +31,11 @@ export const authService = {
 }
 
 export const crmService = {
-  // Dashboard
   async getDashboardStats() {
     const response = await api.get('/dashboard/stats/')
     return response.data
   },
 
-  // Companies
   async getCompanies() {
     const response = await api.get('/companies/')
     return response.data
@@ -58,7 +56,6 @@ export const crmService = {
     await api.delete(`/companies/${id}/`)
   },
 
-  // Contacts
   async getContacts() {
     const response = await api.get('/contacts/')
     return response.data
@@ -79,7 +76,6 @@ export const crmService = {
     await api.delete(`/contacts/${id}/`)
   },
 
-  // Deals
   async getDeals() {
     const response = await api.get('/deals/')
     return response.data
@@ -100,7 +96,6 @@ export const crmService = {
     await api.delete(`/deals/${id}/`)
   },
 
-  // Tasks
   async getTasks() {
     const response = await api.get('/tasks/')
     return response.data
@@ -119,6 +114,26 @@ export const crmService = {
   },
   async deleteTask(id) {
     await api.delete(`/tasks/${id}/`)
+  },
+
+  async getInteractions(params = {}) {
+    const response = await api.get('/interactions/', { params })
+    return response.data
+  },
+  async getInteraction(id) {
+    const response = await api.get(`/interactions/${id}/`)
+    return response.data
+  },
+  async createInteraction(data) {
+    const response = await api.post('/interactions/', data)
+    return response.data
+  },
+  async updateInteraction(id, data) {
+    const response = await api.put(`/interactions/${id}/`, data)
+    return response.data
+  },
+  async deleteInteraction(id) {
+    await api.delete(`/interactions/${id}/`)
   },
 }
 
