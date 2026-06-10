@@ -17,7 +17,6 @@ const editedItem = ref({
   priority: 'medium',
   due_date: '',
   deal: null,
-  assigned_to: null
 })
 
 const defaultItem = {
@@ -27,7 +26,6 @@ const defaultItem = {
   priority: 'medium',
   due_date: '',
   deal: null,
-  assigned_to: null
 }
 
 const statusOptions = [
@@ -429,28 +427,6 @@ const getTaskColor = (index) => {
                   hint="Optional: Link this task to a deal"
                   persistent-hint
                 ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  v-model="editedItem.assigned_to"
-                  :items="contacts"
-                  item-title="email"
-                  item-value="id"
-                  label="Assign To"
-                  variant="outlined"
-                  color="primary"
-                  prepend-inner-icon="mdi-account"
-                  clearable
-                  hint="Optional: Assign this task to a contact"
-                  persistent-hint
-                >
-                  <template v-slot:item="{ props, item }">
-                    <v-list-item v-bind="props" :title="`${item.raw.first_name} ${item.raw.last_name}`" :subtitle="item.raw.email"></v-list-item>
-                  </template>
-                  <template v-slot:selection="{ item }">
-                    {{ item.raw.first_name }} {{ item.raw.last_name }}
-                  </template>
-                </v-select>
               </v-col>
             </v-row>
           </v-container>
