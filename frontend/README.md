@@ -1,5 +1,5 @@
-UnityMiniCRM: Frontend (React)
-==============================
+UnityMiniCRM: Frontend (Vue)
+===========================
 
 
 Setup

@@ -32,7 +32,6 @@ def login_view(request):
     return Response(
         {"error": "Invalid credentials"},
         status=status.HTTP_401_UNAUTHORIZED,
-        headers={"WWW-Authenticate": "Token"},
     )
 
 
@@ -44,7 +43,7 @@ def logout_view(request):
 
 @api_view(["GET"])
 def dashboard_stats(request):
-    stats = {
+    return Response({
         "total_contacts": Contact.objects.count(),
         "total_companies": Company.objects.count(),
         "total_deals": Deal.objects.count(),
@@ -66,8 +65,7 @@ def dashboard_stats(request):
         ).count()
         if "timezone" in dir()
         else 0,
-    }
-    return Response(stats)
+    })
 
 
 class CompanyViewSet(viewsets.ModelViewSet):

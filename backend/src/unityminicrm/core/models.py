@@ -33,6 +33,8 @@ class Contact(models.Model):
 
     phone = models.CharField(blank=True)
     position = models.CharField(blank=True)
+    notes = models.TextField(blank=True)
+
     company = models.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
@@ -40,7 +42,6 @@ class Contact(models.Model):
         null=True,
         related_name="contacts",
     )
-    notes = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -74,6 +75,8 @@ class Deal(models.Model):
     stage = models.CharField(choices=Stage, default=Stage.LEAD)
     probability = models.IntegerField(default=0)
     expected_close_date = models.DateField(blank=True, null=True)
+    notes = models.TextField(blank=True)
+
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="deals"
     )
@@ -84,7 +87,6 @@ class Deal(models.Model):
         null=True,
         related_name="deals",
     )
-    notes = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -116,6 +118,7 @@ class Task(models.Model):
     status = models.CharField(choices=Status, default=Status.PENDING)
     priority = models.CharField(choices=Priority, default=Priority.MEDIUM)
     due_date = models.DateTimeField(blank=True, null=True)
+
     contact = models.ForeignKey(
         Contact, on_delete=models.CASCADE, related_name="tasks"
     )

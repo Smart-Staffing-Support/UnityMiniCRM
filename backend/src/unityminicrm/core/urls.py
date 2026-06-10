@@ -11,15 +11,15 @@ from .views import (
     logout_view,
 )
 
-router = SimpleRouter()
+router = SimpleRouter(trailing_slash=False)
 router.register("companies", CompanyViewSet)
 router.register("contacts", ContactViewSet)
 router.register("deals", DealViewSet)
 router.register("tasks", TaskViewSet)
 
 urlpatterns = [
-    path("auth/login", login_view, name="login"),
-    path("auth/logout", logout_view, name="logout"),
-    path("dashboard/stats", dashboard_stats, name="dashboard_stats"),
+    path("auth/login", login_view),
+    path("auth/logout", logout_view),
+    path("dashboard/stats", dashboard_stats),
     path("", include(router.urls)),
 ]
