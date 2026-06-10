@@ -97,9 +97,6 @@ class Deal(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
-        return self.title
-
 
 class Task(models.Model):
     class Status(models.TextChoices):
