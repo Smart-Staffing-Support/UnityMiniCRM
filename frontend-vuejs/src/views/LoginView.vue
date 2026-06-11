@@ -86,16 +86,6 @@ const handleLogin = async () => {
               >
                 Sign In
               </v-btn>
-
-              <v-divider class="my-4"></v-divider>
-
-              <v-alert type="info" variant="tonal" density="compact">
-                <div class="text-caption">
-                  <strong>Demo Credentials:</strong><br>
-                  Username: demo<br>
-                  Password: demo123
-                </div>
-              </v-alert>
             </v-form>
           </v-card-text>
         </v-card>

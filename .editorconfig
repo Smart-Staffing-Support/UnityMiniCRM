@@ -16,3 +16,9 @@ max_line_length = 79
 
 [*.md]
 trim_trailing_whitespace = false
+
+[*.{py,toml}]
+indent_size = 4
+
+[*.{html,css,js,jsx,json,vue}]
+indent_size = 2

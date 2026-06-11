@@ -72,6 +72,7 @@ class Deal(models.Model):
 
     title = models.CharField()
     amount = models.DecimalField(max_digits=14, decimal_places=2)
+
     stage = models.CharField(choices=Stage, default=Stage.LEAD)
     probability = models.IntegerField(default=0)
     expected_close_date = models.DateField(blank=True, null=True)
@@ -96,9 +97,6 @@ class Deal(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-
-    def __str__(self):
-        return self.title
 
 
 class Task(models.Model):
