@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    created_by = UserSerializer()
+    created_by = UserSerializer(read_only=True)
 
     contacts_count = serializers.SerializerMethodField()
     deals_count = serializers.SerializerMethodField()
@@ -34,7 +34,7 @@ class CompanySerializer(serializers.ModelSerializer):
             "contacts_count",
             "deals_count",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+        read_only_fields = ["id", "created_at", "updated_at"]
 
     def get_contacts_count(self, obj):
         return obj.contacts.count()
@@ -44,7 +44,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class ContactSerializer(serializers.ModelSerializer):
-    created_by = UserSerializer()
+    created_by = UserSerializer(read_only=True)
 
     full_name = serializers.ReadOnlyField()
     company_name = serializers.CharField(source="company.name", read_only=True)
@@ -66,17 +66,11 @@ class ContactSerializer(serializers.ModelSerializer):
             "updated_at",
             "created_by",
         ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "updated_at",
-            "created_by",
-            "full_name",
-        ]
+        read_only_fields = ["id", "created_at", "updated_at", "full_name"]
 
 
 class DealSerializer(serializers.ModelSerializer):
-    created_by = UserSerializer()
+    created_by = UserSerializer(read_only=True)
 
     company_name = serializers.CharField(source="company.name", read_only=True)
     contact_name = serializers.CharField(
@@ -101,11 +95,11 @@ class DealSerializer(serializers.ModelSerializer):
             "updated_at",
             "created_by",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+        read_only_fields = ["id", "created_at", "updated_at"]
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    created_by = UserSerializer()
+    created_by = UserSerializer(read_only=True)
 
     contact_name = serializers.CharField(
         source="contact.full_name", read_only=True
@@ -131,4 +125,4 @@ class TaskSerializer(serializers.ModelSerializer):
             "updated_at",
             "created_by",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "created_by"]
+        read_only_fields = ["id", "created_at", "updated_at"]

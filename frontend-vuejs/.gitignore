@@ -1,3 +1,5 @@
-node-modules/
-dist/
-build/
+# Node packages
+/node_modules/
+
+# Build artifacts
+/dist/

@@ -17,7 +17,7 @@ Tech Stack
 
 ### Frontend (Vue)
 
-- **Vue 3** - JavaScript web framework
+- **Vue 3** - JavaScript web UI framework
 - **Vuetify 3** - Material Design component library
 - **Vue Router** - Client-side routing
 - **Axios** - HTTP client
@@ -25,30 +25,20 @@ Tech Stack
 
 ### Frontend (React)
 
-- **React** - JavaScript web framework
+- **React** - JavaScript web UI framework
 - **Tailwind** - CSS framework
 - **Axios** - HTTP client
 - **Vite** - Build tool and development server
 
 
-Features
---------
+Overview of Features
+--------------------
 
-- User authentication
 - Dashboard with analytics and statistics
-- Contact management (CRUD operations)
-- Company management (CRUD operations)
-- Deal tracking with pipeline stages
-- Task management with priorities *(currently only in the Vue frontend)*
-
-
-Development Notes
------------------
-
-- No TypeScript: Pure JavaScript codebases
-- Token-based authentication with DRF's authtoken
-- CORS headers configured for local development
-- RESTful API architecture
+- Contact management
+- Company management
+- Deal tracking
+- Task management *(only in the Vue frontend)*
 
 
 Prerequisites
@@ -58,8 +48,8 @@ Prerequisites
 - Node.js 18+ with *npm*
 
 
-Setup
------
+Setup and Usage
+---------------
 
 To setup a specific backend/frontend, refer to its own `README.md`.
 
