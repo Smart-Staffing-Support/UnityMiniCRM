@@ -136,22 +136,25 @@ Return the created resources in the API response.
 # Bonus (Optional)
 
 If time permits:
-
 ## Bonus 1
 
-Allow searching for and selecting an existing Company instead of creating a new one.
+Persist each step of the wizard so that users can resume where they left off after a browser refresh, closure, or crash without losing previously entered data.
 
 ## Bonus 2
 
-Add optimistic UI feedback and loading indicators.
+Allow searching for and selecting an existing Company instead of creating a new one.
 
 ## Bonus 3
 
-Write at least one backend test covering the endpoint.
+Support both create and update operations using the same endpoint.
 
 ## Bonus 4
 
-Support both create and update operations using the same endpoint.
+Add optimistic UI feedback and loading indicators.
+
+## Bonus 5
+
+Write at least one backend test covering the endpoint.
 
 ---
 
